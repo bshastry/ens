@@ -9,8 +9,7 @@ abstract contract NameResolver {
     function setName(bytes32 node, string memory name) public virtual;
 }
 
-/// Solidity: Missing abstract specifier
-abstract contract ReverseRegistrar {
+contract ReverseRegistrar {
     // namehash('addr.reverse')
     bytes32 public constant ADDR_REVERSE_NODE = 0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
 
@@ -22,8 +21,7 @@ abstract contract ReverseRegistrar {
      * @param ensAddr The address of the ENS registry.
      * @param resolverAddr The address of the default reverse resolver.
      */
-    /// Solidity: Abstract contracts cannot have public constructors
-    constructor(ENS ensAddr, NameResolver resolverAddr) {
+    constructor(ENS ensAddr, NameResolver resolverAddr) public {
         ens = ensAddr;
         defaultResolver = resolverAddr;
 

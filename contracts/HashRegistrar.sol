@@ -55,7 +55,7 @@ contract HashRegistrar is Registrar {
     }
 
     modifier registryOpen() {
-        require(now >= registryStarted && now <= registryStarted + (365 * 4) * 1 days && ens.owner(rootNode) == address(this));
+        require(block.timestamp >= registryStarted && block.timestamp <= registryStarted + (365 * 4) * 1 days && ens.owner(rootNode) == address(this));
         _;
     }
 
@@ -68,7 +68,7 @@ contract HashRegistrar is Registrar {
     constructor(ENS _ens, bytes32 _rootNode, uint _startDate) public {
         ens = _ens;
         rootNode = _rootNode;
-        registryStarted = _startDate > 0 ? _startDate : now;
+        registryStarted = _startDate > 0 ? _startDate : block.timestamp;
     }
 
     /**
@@ -195,7 +195,7 @@ contract HashRegistrar is Registrar {
         // For simplicity, they should call `startAuction` within
         // 9 days (2 weeks - totalAuctionLength), otherwise their bid will be
         // cancellable by anyone.
-        require(address(bid) != address(0x0) && now >= bid.creationDate() + totalAuctionLength + 2 weeks);
+        require(address(bid) != address(0x0) && block.timestamp >= bid.creationDate() + totalAuctionLength + 2 weeks);
 
         // Send the canceller 0.5% of the bid, and burn the rest.
         bid.setOwner(msg.sender);
@@ -244,7 +244,7 @@ contract HashRegistrar is Registrar {
         Entry storage h = _entries[_hash];
         Deed deedContract = h.deed;
 
-        require(now >= h.registrationDate + 365 days || ens.owner(rootNode) != address(this));
+        require(block.timestamp >= h.registrationDate + 365 days || ens.owner(rootNode) != address(this));
 
         h.value = 0;
         h.highestBid = 0;
@@ -359,10 +359,10 @@ contract HashRegistrar is Registrar {
     function state(bytes32 _hash) public view returns (Mode) {
         Entry storage entry = _entries[_hash];
 
-        if (!isAllowed(_hash, now)) {
+        if (!isAllowed(_hash, block.timestamp)) {
             return Mode.NotYetAvailable;
-        } else if (now < entry.registrationDate) {
-            if (now < entry.registrationDate - revealPeriod) {
+        } else if (block.timestamp < entry.registrationDate) {
+            if (block.timestamp < entry.registrationDate - revealPeriod) {
                 return Mode.Auction;
             } else {
                 return Mode.Reveal;
@@ -429,7 +429,7 @@ contract HashRegistrar is Registrar {
         require(mode == Mode.Open);
 
         Entry storage newAuction = _entries[_hash];
-        newAuction.registrationDate = now + totalAuctionLength;
+        newAuction.registrationDate = block.timestamp + totalAuctionLength;
         newAuction.value = 0;
         newAuction.highestBid = 0;
         emit AuctionStarted(_hash, newAuction.registrationDate);

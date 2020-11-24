@@ -36,7 +36,7 @@ contract DeedImplementation is Deed {
     constructor(address payable initialOwner) public payable {
         _owner = initialOwner;
         _registrar = msg.sender;
-        _creationDate = now;
+        _creationDate = block.timestamp;
         active = true;
         _value = msg.value;
     }

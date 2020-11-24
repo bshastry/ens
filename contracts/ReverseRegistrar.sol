@@ -3,11 +3,14 @@ pragma solidity ^0.5.0;
 
 import "./ENS.sol";
 
-contract NameResolver {
-    function setName(bytes32 node, string memory name) public;
+/// Solidity: Missing abstract specifier
+abstract contract NameResolver {
+    /// Solidity: Missing virtual specifier
+    function setName(bytes32 node, string memory name) public virtual;
 }
 
-contract ReverseRegistrar {
+/// Solidity: Missing abstract specifier
+abstract contract ReverseRegistrar {
     // namehash('addr.reverse')
     bytes32 public constant ADDR_REVERSE_NODE = 0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
 
@@ -19,7 +22,8 @@ contract ReverseRegistrar {
      * @param ensAddr The address of the ENS registry.
      * @param resolverAddr The address of the default reverse resolver.
      */
-    constructor(ENS ensAddr, NameResolver resolverAddr) public {
+    /// Solidity: Abstract contracts cannot have public constructors
+    constructor(ENS ensAddr, NameResolver resolverAddr) {
         ens = ensAddr;
         defaultResolver = resolverAddr;
 
@@ -96,7 +100,9 @@ contract ReverseRegistrar {
      * @dev An optimised function to compute the sha3 of the lower-case
      *      hexadecimal representation of an Ethereum address.
      * @param addr The address to hash
-     * @return The SHA3 hash of the lower-case hexadecimal encoding of the
+     * /// Solidity: Missing return parameter name after return
+     * /// Natspec tag
+     * @return ret The SHA3 hash of the lower-case hexadecimal encoding of the
      *         input address.
      */
     function sha3HexAddress(address addr) private pure returns (bytes32 ret) {
